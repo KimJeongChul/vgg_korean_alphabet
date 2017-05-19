@@ -102,6 +102,18 @@ class DataSet(object):
 
         return self._images[start:end], self._labels[start:end]
 
+    def test_next_batch(self, batch_size, start):
+        start = self._index_in_epoch
+        self._index_in_epoch += batch_size
+        if self._index_in_epoch > num_imgs:
+            self._epoch_completed += 1
+
+        start = 0
+        self._index_in_epoch = batch_size
+        end = self._index_in_epoch
+
+        return self._test_images[start:end], self._test_labels[start:end]
+
 def weight_variable(shape):
     initial = tf.truncated_normal(shape, stddev=0.1)
     return tf.Variable(initial)
@@ -229,14 +241,19 @@ if __name__ == '__main__':
         with tf.Session() as sess:
             sess.run(tf.initialize_all_variables())
 
-            for i in range(3000):
+            for i in range(5000):
                 batch_xs, batch_ys = data_set.train_next_batch(50)
 
                 if i % 100 == 0:
                     train_accuracy = accuracy.eval(feed_dict={x_input: batch_xs, y_input: batch_ys, keep_prob: 1.0})
                     print "step : "+str(i)+" train accuracy : " + str(train_accuracy)
                 train_step.run(feed_dict={x_input: batch_xs, y_input: batch_ys, keep_prob: 0.5})
+            result_test_accuracy = 0
+            for i in range(0,98):
+                batch_train_xs, batch_train_ys = data_set.test_next_batch(40,i)
+                test_accuracy = accuracy.eval(
+                feed_dict={x_input: batch_train_xs, y_input: batch_train_ys, keep_prob: 1.0})
+                result_test_accuracy += test_accuracy
 
-            test_accuracy = accuracy.eval(
-            feed_dict={x_input: test_images, y_input: test_labels, keep_prob: 1.0})
-            print "test accuracy : " + str(test_accuracy)
+            print "test accuracy : " + str(result_test_accuracy/98)
+

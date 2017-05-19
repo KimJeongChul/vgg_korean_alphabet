@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 
 
-with h5py.File('kalph_train.hf', 'r') as hf:
+with h5py.File('resized_kalph_train.hf', 'r') as hf:
     images = np.array(hf['images'])
 
 start = 0

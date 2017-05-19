@@ -6,13 +6,13 @@ from PIL import Image
 start = 1
 end = 3920
 
-with h5py.File('kalph_test.hf', 'r') as hf:
+with h5py.File('resized_kalph_test.hf', 'r') as hf:
     origin_images = np.array(hf['images'])
     labels = np.array(hf['labels'])
     print "original kalph_train images shape"+str(origin_images.shape)
     print "original kalph_train labels shape"+str(labels.shape)
     
-image = Image.open("image_test_resize224/kalph_test0.jpg")
+image = Image.open("image_test_resize224/kalph_train0.jpg")
 image = image.convert('L')
 images = np.array(image)
 images = images.reshape([1,224,224])
@@ -20,7 +20,7 @@ images = images.reshape([1,224,224])
 for i in range(start,end):
     if i % 1000 == 0 :
         print str(i)+"번째 image를 처리하였습니다"
-    image = Image.open("image_test_resize224/kalph_test"+str(i)+".jpg")
+    image = Image.open("image_test_resize224/kalph_train"+str(i)+".jpg")
     image = image.convert('L')
     np_array = np.array(image)
     np_array = np_array.reshape([1,224,224])
